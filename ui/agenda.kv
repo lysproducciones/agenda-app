@@ -1,0 +1,74 @@
+<AgendaScreen>:
+    name: 'agenda'
+    MDBoxLayout:
+        orientation: 'vertical'
+
+        MDTopAppBar:
+            title: "Agendar Turno"
+            left_action_items: [["arrow-left", lambda x: app.ir_al_menu()]]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(15)
+            adaptive_height: True
+
+            # Buscador de Cliente
+            MDTextField:
+                id: input_cliente
+                hint_text: "Buscar Cliente"
+                mode: "rectangle"
+                icon_right: "account-search"
+                on_text: root.buscar_cliente(self.text)
+
+            # Buscador de SERVICIO (NUEVO)
+            MDTextField:
+                id: input_servicio
+                hint_text: "Seleccionar Servicio"
+                mode: "rectangle"
+                icon_right: "briefcase-search"
+                # Al tocar el campo (focus), abrimos la lista de servicios
+                on_focus: if self.focus: root.abrir_menu_servicios()
+
+            # Fila de Fecha y Hora
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                adaptive_height: True
+
+                MDRaisedButton:
+                    id: btn_fecha
+                    text: "ELEGIR FECHA"
+                    size_hint_x: 0.5
+                    md_bg_color: 0.3, 0.3, 0.3, 1
+                    on_release: root.abrir_calendario()
+
+                MDRaisedButton:
+                    id: btn_hora
+                    text: "ELEGIR HORA"
+                    size_hint_x: 0.5
+                    md_bg_color: 0.3, 0.3, 0.3, 1
+                    on_release: root.abrir_reloj()
+
+            MDTextField:
+                id: input_nota
+                hint_text: "Nota (Opcional)"
+                mode: "rectangle"
+
+            MDRaisedButton:
+                text: "GUARDAR TURNO"
+                size_hint_x: 1
+                md_bg_color: 0, 0.6, 0, 1
+                on_release: root.guardar_turno()
+
+        MDLabel:
+            text: "Próximos Turnos"
+            theme_text_color: "Primary"
+            font_style: "H6"
+            size_hint_y: None
+            height: dp(40)
+            padding_x: dp(20)
+
+        ScrollView:
+            MDList:
+                id: lista_turnos

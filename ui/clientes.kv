@@ -1,0 +1,64 @@
+<ClientesScreen>:
+    name: 'clientes'
+    MDBoxLayout:
+        orientation: 'vertical'
+        
+        MDTopAppBar:
+            title: "Mis Clientes"
+            left_action_items: [["arrow-left", lambda x: app.ir_al_menu()]]
+
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: dp(20)
+            spacing: dp(10)
+            adaptive_height: True
+
+            MDTextField:
+                id: nombre_cliente
+                hint_text: "Nombre y Apellido"
+                icon_right: "account"
+                mode: "rectangle"
+
+            MDBoxLayout:
+                orientation: 'horizontal'
+                spacing: dp(10)
+                adaptive_height: True
+
+                MDTextField:
+                    id: telefono_cliente
+                    hint_text: "Teléfono"
+                    input_filter: "int"
+                    mode: "rectangle"
+                    size_hint_x: 0.5
+
+                MDTextField:
+                    id: telefono_alt
+                    hint_text: "Tel. Alternativo"
+                    input_filter: "int"
+                    mode: "rectangle"
+                    size_hint_x: 0.5
+
+            MDTextField:
+                id: direccion_cliente
+                hint_text: "Dirección / Email"
+                mode: "rectangle"
+
+            MDRaisedButton:
+                text: "GUARDAR CLIENTE"
+                size_hint_x: 1
+                md_bg_color: 0, 0, 0.8, 1
+                on_release: root.guardar_datos()
+
+        MDBoxLayout:
+            size_hint_y: None
+            height: dp(60)
+            padding: dp(10)
+            
+            MDTextField:
+                hint_text: "Buscar cliente..."
+                icon_right: "magnify"
+                on_text: root.buscar_en_lista(self.text)
+
+        ScrollView:
+            MDList:
+                id: container_lista

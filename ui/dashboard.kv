@@ -1,0 +1,127 @@
+<MenuBoton@MDCard>:
+    icon_name: "android"
+    text_label: "Texto"
+    orientation: 'vertical'
+    size_hint: None, None
+    size: "145dp", "145dp"
+    padding: "10dp"
+    spacing: "5dp"
+    radius: [20]
+    elevation: 2
+    line_color: 1, 1, 1, 0.8
+    line_width: 0.8
+    md_bg_color: 0.25, 0.25, 0.25, 0.7
+    ripple_behavior: True
+
+    MDIcon:
+        icon: root.icon_name
+        halign: "center"
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        font_size: "50dp"
+        pos_hint: {"center_x": .5}
+
+    MDLabel:
+        text: root.text_label
+        halign: "center"
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 0.9
+        font_style: "Subtitle1"
+        bold: True
+        pos_hint: {"center_x": .5}
+
+<DashboardScreen>:
+    name: 'menu'
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color: 0.92, 0.92, 0.92, 1 
+
+        # --- CABECERA ---
+        MDBoxLayout:
+            size_hint_y: 0.2
+            orientation: 'vertical'
+            padding: "20dp"
+            canvas.before:
+                Color:
+                    rgba: 0.2, 0.2, 0.2, 1 
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [0, 0, 30, 30]
+            
+            MDLabel:
+                text: "Mi Agenda"
+                font_style: "H4"
+                bold: True
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                halign: "center"
+            
+            MDLabel:
+                text: "Panel de Control"
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 0.6
+                halign: "center"
+                font_style: "Caption"
+
+        # --- CONTENIDO SCROLLABLE (Para que quepa el calendario abajo) ---
+        ScrollView:
+            MDBoxLayout:
+                orientation: 'vertical'
+                adaptive_height: True
+                padding: "20dp"
+                spacing: "20dp"
+
+                # 1. BOTONES PRINCIPALES
+                MDGridLayout:
+                    cols: 2
+                    spacing: "15dp"
+                    adaptive_height: True
+                    adaptive_width: True
+                    pos_hint: {"center_x": 0.5}
+
+                    MenuBoton:
+                        icon_name: "calendar-clock"
+                        text_label: "Turnos"
+                        on_release: app.root.current = 'agenda'
+
+                    MenuBoton:
+                        icon_name: "account-group"
+                        text_label: "Clientes"
+                        on_release: app.root.current = 'clientes'
+
+                    MenuBoton:
+                        icon_name: "briefcase"
+                        text_label: "Servicios"
+                        on_release: app.root.current = 'servicios'
+
+                    MenuBoton:
+                        icon_name: "chart-bar"
+                        text_label: "Reportes"
+                        on_release: app.root.current = 'reportes'
+
+                # 2. SECCIÓN: PRÓXIMOS TURNOS
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    adaptive_height: True
+                    spacing: "10dp"
+                    
+                    MDLabel:
+                        text: "Próximos Turnos"
+                        font_style: "H6"
+                        theme_text_color: "Primary"
+                        bold: True
+                        size_hint_y: None
+                        height: "30dp"
+                    
+                    # Lista de próximos turnos (tipo tarjeta)
+                    MDCard:
+                        orientation: 'vertical'
+                        radius: [15]
+                        elevation: 1
+                        adaptive_height: True
+                        md_bg_color: 1, 1, 1, 1
+                        
+                        MDList:
+                            id: lista_proximos_turnos
+                            # Aquí se llenarán los turnos desde Python
