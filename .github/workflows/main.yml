@@ -1,0 +1,57 @@
+name: Construir APK
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # 1. Preparar el entorno (Instalar herramientas de Linux)
+      - name: Instalar dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            build-essential \
+            git \
+            python3 \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            libgstreamer1.0 \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            libffi-dev \
+            autoconf \
+            libtool \
+            automake
+
+      # 2. Instalar Buildozer y las versiones correctas de Python
+      - name: Instalar Buildozer
+        run: |
+          pip3 install --upgrade buildozer
+          pip3 install "Cython==0.29.36"
+
+      # 3. Construir la APK (Esto tardará unos 15 min)
+      - name: Construir con Buildozer
+        run: |
+          yes | buildozer android debug
+
+      # 4. Subir el archivo APK para descargar
+      - name: Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mi-agenda-apk
+          path: bin/*.apk
