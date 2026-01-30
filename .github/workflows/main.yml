@@ -1,28 +1,70 @@
-name: Construir APK con Docker
+
+name: Construir APK Nativo
 on:
   push:
     branches: [ main, master ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-      # 1. Descargar tu código
-      - name: Checkout del código
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      # 2. Construir usando el entorno preparado (Docker)
-      # Esto descarga una "PC virtual" que ya tiene todo listo para Android
-      - name: Buildozer Action
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
+      # 1. Configurar Java 17 (Vital para que no falle la licencia)
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          command: buildozer android debug
-          buildozer_version: master
-          workdir: .
+          distribution: 'temurin'
+          java-version: '17'
 
-      # 3. Subir el APK resultante
+      # 2. Instalar dependencias de Linux (El motor del auto)
+      - name: Instalar Dependencias
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-pip \
+            build-essential \
+            git \
+            python3 \
+            python3-dev \
+            ffmpeg \
+            libsdl2-dev \
+            libsdl2-image-dev \
+            libsdl2-mixer-dev \
+            libsdl2-ttf-dev \
+            libportmidi-dev \
+            libswscale-dev \
+            libavformat-dev \
+            libavcodec-dev \
+            zlib1g-dev \
+            libgstreamer1.0 \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            libffi-dev \
+            autoconf \
+            libtool \
+            automake \
+            pkg-config \
+            libltdl-dev \
+            zip \
+            unzip
+
+      # 3. Instalar Buildozer y Cython (Las herramientas de construcción)
+      - name: Instalar Buildozer
+        run: |
+          pip3 install --upgrade buildozer
+          pip3 install "Cython==0.29.36"
+          # Instalar dependencies extra de python para asegurar
+          pip3 install typing-extensions
+
+      # 4. Construir la APK (Con permisos automáticos)
+      - name: Construir APK
+        run: |
+          # El comando "yes" acepta las licencias de Android automáticamente
+          yes | buildozer -v android debug
+
+      # 5. Subir el APK resultante
       - name: Subir APK
         uses: actions/upload-artifact@v4
         with:
